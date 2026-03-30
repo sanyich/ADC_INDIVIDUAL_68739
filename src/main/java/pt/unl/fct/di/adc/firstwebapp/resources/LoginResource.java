@@ -1,7 +1,5 @@
 package pt.unl.fct.di.adc.firstwebapp.resources;
 
-import java.util.logging.Logger;
-
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 
@@ -21,7 +19,6 @@ import pt.unl.fct.di.adc.firstwebapp.util.SecurityUtil;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class LoginResource {
 
-    private static final Logger LOG = Logger.getLogger(LoginResource.class.getName());
 	private static final String USER_KIND = "Account";    
 	private static final String TOKEN_KIND = "Token";
 
@@ -65,6 +62,7 @@ public class LoginResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response doLogin(LoginRequest req) {
+        // validate input
         if (req == null || req.input == null ||
             req.input.username == null || req.input.password == null ||
             req.input.username.isBlank() || req.input.password.isBlank()) {
@@ -79,6 +77,7 @@ public class LoginResource {
         Key userKey = datastore.newKeyFactory().setKind(USER_KIND).newKey(username);
         Entity user = datastore.get(userKey);
 
+        // validate credentials
         if (user == null) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity(g.toJson(new ErrorData("INVALID_CREDENTIALS", "User not found or wrong password.")))

@@ -89,7 +89,6 @@ public class ModifyAccountResource {
         String targetRole = targetUser.getString("role");
 
         // authorization check
-
         boolean allowed = false;
 
         if ("ADMIN".equals(requesterRole)) {

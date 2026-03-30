@@ -3,28 +3,85 @@
 
 <head>
   <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
-  <title>ADC: My First Web App</title>
+  <title>ADC: Individual Project</title>
 </head>
 
 <body>
-  <h1>Welcome to this very simple web application!</h1>
+  <h1>ADC Individual Project REST API</h1>
 
-  <table>
+  <p>This application provides a set of REST endpoints for user and session management.</p>
+
+  <table border="1" cellpadding="5">
     <tr>
-      <td colspan="2" style="font-weight:bold;">Available Services:</td>
+      <td colspan="3" style="font-weight:bold;">Available Services (POST endpoints):</td>
     </tr>
+
     <tr>
-      <td><a href='/rest/utils/hello'>Say Hello!</a></td>
-      <td>(greetings)</td>
+      <td>/rest/createaccount</td>
+      <td>Create a new user account</td>
+      <td>PUBLIC</td>
     </tr>
+
     <tr>
-      <td><a href='/rest/utils/time'>What time is it?</a></td>
-      <td>(see server time)</td>
+      <td>/rest/login</td>
+      <td>Authenticate user and generate token</td>
+      <td>PUBLIC</td>
     </tr>
+
+    <tr>
+      <td>/rest/logout</td>
+      <td>Invalidate current session token</td>
+      <td>AUTHENTICATED</td>
+    </tr>
+
+    <tr>
+      <td>/rest/showusers</td>
+      <td>List all users</td>
+      <td>ADMIN / BOFFICER</td>
+    </tr>
+
+    <tr>
+      <td>/rest/showauthsessions</td>
+      <td>List all active sessions</td>
+      <td>ADMIN</td>
+    </tr>
+
+    <tr>
+      <td>/rest/showuserrole</td>
+      <td>Get role of a specific user</td>
+      <td>ADMIN / BOFFICER</td>
+    </tr>
+
+    <tr>
+      <td>/rest/changeuserrole</td>
+      <td>Change role of a user</td>
+      <td>ADMIN</td>
+    </tr>
+
+    <tr>
+      <td>/rest/deleteaccount</td>
+      <td>Delete a user account</td>
+      <td>ADMIN</td>
+    </tr>
+
+    <tr>
+      <td>/rest/changeuserpwd</td>
+      <td>Change own password</td>
+      <td>AUTHENTICATED (SELF)</td>
+    </tr>
+
+    <tr>
+      <td>/rest/modaccount</td>
+      <td>Modify account data (phone/address)</td>
+      <td>ROLE-BASED</td>
+    </tr>
+
   </table>
+
 </body>
+
 <footer>
-  Copyright: ADC-PEI, FCT NOVA 2026
+  <p>Oleksandra Kozlova, ADC-PEI, FCT NOVA 2026</p>
 </footer>
 
 </html>

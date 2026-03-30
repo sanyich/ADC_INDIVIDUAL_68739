@@ -26,9 +26,6 @@ public class LogoutResource {
 
     public LogoutResource() {}
 
-    // ----------------------------
-    // Request structure
-    // ----------------------------
     public static class LogoutRequest {
         public Input input;
         public AuthToken token;
@@ -38,20 +35,17 @@ public class LogoutResource {
         }
     }
 
-    // ----------------------------
-    // POST /rest/logout
-    // ----------------------------
     @POST
     public Response logout(LogoutRequest req) {
 
-        // 1. Validate request
+        // validate request
         if (req == null || req.input == null || req.token == null ||
             req.input.username == null || req.input.username.isBlank()) {
 
             return ResponseUtil.badRequest("INVALID_INPUT", "Missing username or token.");
         }
 
-        // 2. Validate token
+        // validate token
         AuthUtil.TokenCheckResult check = AuthUtil.validateToken(datastore, req.token);
 
         if (check.error != null) {
@@ -62,19 +56,18 @@ public class LogoutResource {
         String callerRole = req.token.role;
         String targetUsername = req.input.username;
 
-        // 3. Permission check
+        // permission check
         if (!"ADMIN".equals(callerRole) && !callerUsername.equals(targetUsername)) {
             return ResponseUtil.forbidden("FORBIDDEN", "Cannot logout another user's session.");
         }
 
-        // 4. Delete token
+        // delete token
         Key tokenKey = datastore.newKeyFactory()
                 .setKind(TOKEN_KIND)
                 .newKey(req.token.tokenId);
 
         datastore.delete(tokenKey);
 
-        // 5. Success
         return ResponseUtil.success("Logout successful");
     }
 }

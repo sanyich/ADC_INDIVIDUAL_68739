@@ -59,6 +59,7 @@ public class CreateAccountResource {
     @POST
     public Response createAccount(CreateAccountRequest req) {
 
+        // validate input
         if (req == null || req.input == null) {
             return ResponseUtil.error(
                     Response.Status.BAD_REQUEST,
@@ -69,6 +70,7 @@ public class CreateAccountResource {
 
         CreateAccountRequest.Input in = req.input;
 
+        // validate fields
         if (isBlank(in.username) || isBlank(in.password) || isBlank(in.confirmation)
                 || isBlank(in.phone) || isBlank(in.address) || isBlank(in.role)) {
             return ResponseUtil.error(
@@ -81,6 +83,7 @@ public class CreateAccountResource {
         String username = in.username.trim().toLowerCase();
         String roleUpper = in.role.trim().toUpperCase();
 
+        // basic username format check
         if (!username.contains("@")) {
             return ResponseUtil.error(
                     Response.Status.BAD_REQUEST,
@@ -89,6 +92,7 @@ public class CreateAccountResource {
             );
         }
 
+        // password confirmation check
         if (!in.password.equals(in.confirmation)) {
             return ResponseUtil.error(
                     Response.Status.BAD_REQUEST,
@@ -97,6 +101,7 @@ public class CreateAccountResource {
             );
         }
 
+        // validate role
         if (!VALID_ROLES.contains(roleUpper)) {
             return ResponseUtil.error(
                     Response.Status.BAD_REQUEST,

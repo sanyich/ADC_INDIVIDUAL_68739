@@ -7,7 +7,6 @@ import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
-import com.google.cloud.datastore.StructuredQuery;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -62,16 +61,19 @@ public class ShowUsersResource {
     @POST
     public Response showUsers(ShowUsersRequest req) {
 
+        // validate input
         if (req == null || req.token == null) {
             return ResponseUtil.badRequest("INVALID_INPUT", "Missing token.");
         }
-
         AuthUtil.TokenCheckResult check = AuthUtil.validateToken(datastore, req.token);
+
+        // validate token
         if (check.error != null) {
             return ResponseUtil.forbidden(check.error, "Invalid or expired token.");
         }
-
         String role = req.token.role;
+
+        // only ADMIN or BOFFICER
         if (!"ADMIN".equals(role) && !"BOFFICER".equals(role)) {
             return ResponseUtil.forbidden("FORBIDDEN", "Only ADMIN or BOFFICER can list users.");
         }
