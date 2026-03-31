@@ -15,6 +15,9 @@ public class ChangeUserRoleResource {
 
     private static final String ACCOUNT_KIND = "Account";
     private static final String TOKEN_KIND = "Token";
+    private static final String ADMIN = "ADMIN";
+    private static final String BOFFICER = "BOFFICER";
+    private static final String USER = "USER";
 
     private final Datastore datastore = FirestoreUtil.getDatastore();
 
@@ -65,7 +68,7 @@ public class ChangeUserRoleResource {
         }
 
         // only ADMIN
-        if (!"ADMIN".equals(req.token.role)) {
+        if (!ADMIN.equals(req.token.role)) {
             return ResponseUtil.error(
                     Response.Status.FORBIDDEN,
                     "FORBIDDEN",
@@ -77,9 +80,9 @@ public class ChangeUserRoleResource {
         String newRole = req.input.role.trim().toUpperCase();
 
         // validate role
-        if (!newRole.equals("USER") &&
-            !newRole.equals("BOFFICER") &&
-            !newRole.equals("ADMIN")) {
+        if (!newRole.equals(USER) &&
+            !newRole.equals(BOFFICER) &&
+            !newRole.equals(ADMIN)) {
 
             return ResponseUtil.error(
                     Response.Status.BAD_REQUEST,

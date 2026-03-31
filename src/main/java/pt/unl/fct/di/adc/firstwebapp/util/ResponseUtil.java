@@ -6,24 +6,24 @@ import jakarta.ws.rs.core.Response;
 public class ResponseUtil {
 
     private static final Gson g = new Gson();
+    private static final String JSON = "application/json; charset=utf-8";
 
-    // Success
+    // success
     public static Response success(Object data) {
         return Response.ok(
                 g.toJson(new ApiResponse("success", data)),
-                "application/json; charset=utf-8"
+                JSON
         ).build();
     }
 
-    // Generic error
+    // generic error
     public static Response error(Response.Status httpStatus, String status, String message) {
         return Response.status(httpStatus)
                 .entity(g.toJson(new ApiResponse(status, message)))
-                .type("application/json; charset=utf-8")
+                .type(JSON)
                 .build();
     }
 
-    // Convenience methods
     public static Response badRequest(String status, String message) {
         return error(Response.Status.BAD_REQUEST, status, message);
     }
@@ -36,6 +36,15 @@ public class ResponseUtil {
         return error(Response.Status.CONFLICT, status, message);
     }
 
+    public static Response notFound(String status, String message) {
+        return error(Response.Status.NOT_FOUND, status, message);
+    }
+
+    public static Response unauthorized(String status, String message) {
+        return error(Response.Status.UNAUTHORIZED, status, message);
+    }
+
+    // wrapper
     public static class ApiResponse {
         public String status;
         public Object data;

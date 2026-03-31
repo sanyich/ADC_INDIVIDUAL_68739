@@ -14,6 +14,8 @@ import pt.unl.fct.di.adc.firstwebapp.util.*;
 public class ShowUserRoleResource {
 
     private static final String ACCOUNT_KIND = "Account";
+    private static final String ADMIN = "ADMIN";
+    private static final String BOFFICER = "BOFFICER";
 
     private final Datastore datastore = FirestoreUtil.getDatastore();
 
@@ -64,7 +66,7 @@ public class ShowUserRoleResource {
 
         // check permissions
         String role = req.token.role;
-        if (!"ADMIN".equals(role) && !"BOFFICER".equals(role)) {
+        if (!ADMIN.equals(role) && !BOFFICER.equals(role)) {
             return ResponseUtil.error(
                     Response.Status.FORBIDDEN,
                     "FORBIDDEN",

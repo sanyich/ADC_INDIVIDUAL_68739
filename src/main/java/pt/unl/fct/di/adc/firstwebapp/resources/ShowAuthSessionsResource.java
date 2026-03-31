@@ -17,6 +17,7 @@ import pt.unl.fct.di.adc.firstwebapp.util.*;
 public class ShowAuthSessionsResource {
 
     private static final String TOKEN_KIND = "Token";
+    private static final String ADMIN = "ADMIN";
 
     private final Datastore datastore = FirestoreUtil.getDatastore();
 
@@ -69,7 +70,7 @@ public class ShowAuthSessionsResource {
         }
 
         // check ADMIN
-        if (!"ADMIN".equals(req.token.role)) {
+        if (!ADMIN.equals(req.token.role)) {
             return ResponseUtil.error(Response.Status.FORBIDDEN,
                     "FORBIDDEN", "Only ADMIN can see sessions.");
         }

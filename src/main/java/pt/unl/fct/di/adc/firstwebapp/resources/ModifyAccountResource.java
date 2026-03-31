@@ -14,6 +14,9 @@ import pt.unl.fct.di.adc.firstwebapp.util.*;
 public class ModifyAccountResource {
 
     private static final String ACCOUNT_KIND = "Account";
+    private static final String ADMIN = "ADMIN";
+    private static final String BOFFICER = "BOFFICER";
+    private static final String USER = "USER";
 
     private final Datastore datastore = FirestoreUtil.getDatastore();
 
@@ -91,15 +94,15 @@ public class ModifyAccountResource {
         // authorization check
         boolean allowed = false;
 
-        if ("ADMIN".equals(requesterRole)) {
+        if (ADMIN.equals(requesterRole)) {
             allowed = true;
-        } else if ("BOFFICER".equals(requesterRole)) {
+        } else if (BOFFICER.equals(requesterRole)) {
             // can modify themselves + users
             if (requester.equals(targetUsername) ||
-                "USER".equals(targetRole)) {
+                USER.equals(targetRole)) {
                 allowed = true;
             }
-        } else if ("USER".equals(requesterRole)) {
+        } else if (USER.equals(requesterRole)) {
             // only themselves
             if (requester.equals(targetUsername)) {
                 allowed = true;

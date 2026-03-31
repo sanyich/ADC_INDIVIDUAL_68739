@@ -26,8 +26,12 @@ public class CreateAccountResource {
     private static final Logger LOG = Logger.getLogger(CreateAccountResource.class.getName());
     private static final String ACCOUNT_KIND = "Account";
 
+    private static final String ADMIN = "ADMIN";
+    private static final String BOFFICER = "BOFFICER";
+    private static final String USER = "USER";
+
     private static final Set<String> VALID_ROLES =
-            Set.of("USER", "BOFFICER", "ADMIN");
+            Set.of(USER, BOFFICER, ADMIN);
 
     private final Datastore datastore = FirestoreUtil.getDatastore();
 
@@ -59,10 +63,9 @@ public class CreateAccountResource {
     @POST
     public Response createAccount(CreateAccountRequest req) {
 
-        // validate input
+        // validate request structure
         if (req == null || req.input == null) {
-            return ResponseUtil.error(
-                    Response.Status.BAD_REQUEST,
+            return ResponseUtil.badRequest(
                     "INVALID_INPUT",
                     "Missing input object."
             );
@@ -70,61 +73,69 @@ public class CreateAccountResource {
 
         CreateAccountRequest.Input in = req.input;
 
-        // validate fields
+        // validate required fields
         if (isBlank(in.username) || isBlank(in.password) || isBlank(in.confirmation)
                 || isBlank(in.phone) || isBlank(in.address) || isBlank(in.role)) {
-            return ResponseUtil.error(
-                    Response.Status.BAD_REQUEST,
+            return ResponseUtil.badRequest(
                     "INVALID_INPUT",
                     "All fields are required."
             );
         }
 
         String username = in.username.trim().toLowerCase();
-        String roleUpper = in.role.trim().toUpperCase();
 
-        // basic username format check
+        // validate email format
         if (!username.contains("@")) {
-            return ResponseUtil.error(
-                    Response.Status.BAD_REQUEST,
+            return ResponseUtil.badRequest(
                     "INVALID_INPUT",
                     "Username must be in email format."
             );
         }
 
-        // password confirmation check
+        // validate password confirmation
         if (!in.password.equals(in.confirmation)) {
-            return ResponseUtil.error(
-                    Response.Status.BAD_REQUEST,
+            return ResponseUtil.badRequest(
                     "INVALID_INPUT",
                     "Password and confirmation do not match."
             );
         }
 
+        // validate password strength
+        if (in.password.length() < 6) {
+            return ResponseUtil.badRequest(
+                    "INVALID_PASSWORD",
+                    "Password must be at least 6 characters."
+            );
+        }
+
         // validate role
+        String roleUpper = in.role.trim().toUpperCase();
+
         if (!VALID_ROLES.contains(roleUpper)) {
-            return ResponseUtil.error(
-                    Response.Status.BAD_REQUEST,
+            return ResponseUtil.badRequest(
                     "INVALID_INPUT",
                     "Role must be USER, BOFFICER, or ADMIN."
             );
         }
 
+        // check if user exists
         Key userKey = datastore.newKeyFactory()
                 .setKind(ACCOUNT_KIND)
                 .newKey(username);
 
         Entity existing = datastore.get(userKey);
+
         if (existing != null) {
-            return ResponseUtil.error(
-                    Response.Status.CONFLICT,
+            return ResponseUtil.conflict(
                     "USER_ALREADY_EXISTS",
                     "An account with that username already exists."
             );
         }
 
+        // hash password
         String hashedPassword = SecurityUtil.hashPassword(in.password);
 
+        // create account
         Entity account = Entity.newBuilder(userKey)
                 .set("username", username)
                 .set("password", hashedPassword)
@@ -137,9 +148,13 @@ public class CreateAccountResource {
 
         LOG.info("Account created: " + username + " with role " + roleUpper);
 
-        return ResponseUtil.success(new CreateAccountResponseData(username, roleUpper));
+        // success response
+        return ResponseUtil.success(
+                new CreateAccountResponseData(username, roleUpper)
+        );
     }
 
+    // helper method to check if a string is null or blank
     private boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
     }
