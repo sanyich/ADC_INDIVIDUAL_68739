@@ -7,7 +7,7 @@ public class FirestoreUtil {
 
     private static Datastore datastore;
 
-    private static final String PROJECT_ID = "individual-proj-491416";
+    private static final String PROJECT_ID = "adc-ind-491915";
 
     private FirestoreUtil() {}
 
