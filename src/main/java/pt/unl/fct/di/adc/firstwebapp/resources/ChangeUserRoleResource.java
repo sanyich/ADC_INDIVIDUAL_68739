@@ -27,7 +27,7 @@ public class ChangeUserRoleResource {
 
         public static class Input {
             public String username;
-            public String role;
+            public String newRole;
         }
     }
 
@@ -46,12 +46,12 @@ public class ChangeUserRoleResource {
 
         // validate input
         if (req == null || req.input == null || req.token == null ||
-            req.input.username == null || req.input.role == null) {
+            req.input.username == null || req.input.newRole == null) {
 
             return ResponseUtil.error(
                     Response.Status.BAD_REQUEST,
                     "INVALID_INPUT",
-                    "Missing username, role or token."
+                    "Missing username, newRole or token."
             );
         }
 
@@ -77,7 +77,7 @@ public class ChangeUserRoleResource {
         }
 
         String username = req.input.username.trim().toLowerCase();
-        String newRole = req.input.role.trim().toUpperCase();
+        String newRole = req.input.newRole.trim().toUpperCase();
 
         // validate role
         if (!newRole.equals(USER) &&

@@ -26,7 +26,6 @@ public class ChangeUserPasswordResource {
             public String username;
             public String oldPassword;
             public String newPassword;
-            public String confirmation;
         }
     }
 
@@ -45,8 +44,7 @@ public class ChangeUserPasswordResource {
         if (req == null || req.input == null || req.token == null ||
             req.input.username == null ||
             req.input.oldPassword == null ||
-            req.input.newPassword == null ||
-            req.input.confirmation == null) {
+            req.input.newPassword == null) {
 
             return ResponseUtil.error(
                     Response.Status.BAD_REQUEST,
@@ -102,15 +100,6 @@ public class ChangeUserPasswordResource {
                     Response.Status.FORBIDDEN,
                     "INVALID_CREDENTIALS",
                     "Old password is incorrect."
-            );
-        }
-
-        // validate new password
-        if (!req.input.newPassword.equals(req.input.confirmation)) {
-            return ResponseUtil.error(
-                    Response.Status.BAD_REQUEST,
-                    "INVALID_INPUT",
-                    "New password and confirmation do not match."
             );
         }
 

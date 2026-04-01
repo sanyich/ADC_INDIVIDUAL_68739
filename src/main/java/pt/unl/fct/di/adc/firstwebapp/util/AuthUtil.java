@@ -27,7 +27,9 @@ public class AuthUtil {
         }
 
         if (!stored.getString("username").equals(token.username) ||
-            !stored.getString("role").equals(token.role)) {
+            !stored.getString("role").equals(token.role) ||
+            stored.getLong("issuedAt") != token.issuedAt ||
+            stored.getLong("expiresAt") != token.expiresAt) {
             return new TokenCheckResult(null, "INVALID_TOKEN");
         }
 
